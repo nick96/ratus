@@ -1,2 +1,5 @@
 .mypy_cache
 *~
+/.coverage
+*.egg-info/
+*/**/__pycache__/

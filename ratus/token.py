@@ -53,14 +53,15 @@ class TokenLiteral(Token):
 
 
 class Tokeniser:
-    def __init__(self, source: str):
+    def __init__(self):
         self.start: int = 0
         self.current: int = 0
-        self.source: str = source
+        self.source: str = ""
         self.tokens: List[Token] = []
 
-    def tokenise(self) -> List[Token]:
+    def tokenise(self, source: str) -> List[Token]:
         """Tokenise an input in a list of tokens."""
+        self.source = source
         self.current = 0
         self.start = 0
         while self.current < len(self.source):
@@ -126,7 +127,19 @@ class Tokeniser:
     def numeric(self):
         while self.current < len(self.source) and self.source[self.current].isdigit():
             self.current += 1
+
+        # Invalid to finish expression with "."
+        if self.current == len(self.source) - 1 and self.source[self.current] == ".":
+            raise TokeniserError("Expression cannot finish with '.'")
+
         if self.current < len(self.source) and self.source[self.current] == ".":
+            # Consume the "." so we can start consuming digits again
+            self.current += 1
+            if not self.source[self.current].isdigit():
+                raise TokeniserError(
+                    f"Expected digit after '.', found '{self.source[self.current]}'"
+                )
+
             # Match a float
             while (
                 self.current < len(self.source) and self.source[self.current].isdigit()

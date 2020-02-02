@@ -37,22 +37,27 @@ binary_op -> '=' | '!=' | '<' | '<=' | '>' | '>=' | '+' | '-' | '/';
 
 Associatity
 """
-from typing import Any
+from typing import Any, Optional, Dict, Callable
 
-from ratus.exec import Executor
-from ratus.parse import Parser, ParserError
-from ratus.token import Tokeniser, TokeniserError
+from ratus.execer import Executor
+from ratus.parse import Parser
+from ratus.token import Tokeniser
 
 __version__ = "0.0.1"
 
 
-def evaluate(input_: str) -> Any:
-    """Evaluate an input as a ratus expression."""
-    tokeniser = Tokeniser(input_)
-    tokens = tokeniser.tokenise(input_)
+class Evaluator:
+    def __init__(
+        self, injected_functions: Optional[Dict[str, Callable[..., Any]]] = None
+    ) -> None:
+        self.tokeniser = Tokeniser()
+        self.parser = Parser()
+        self.executor = Executor(injected_functions)
 
-    parser = Parser(tokens)
-    expr = parser.parse()
+    def evaluate(self, source: str) -> Any:
+        """Evaluate an input as a ratus expression."""
+        tokens = self.tokeniser.tokenise(source)
 
-    executor = Executor(expr)
-    return executor.execute()
+        expression = self.parser.parse(tokens)
+
+        return self.executor.execute(expression)
