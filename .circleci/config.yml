@@ -25,7 +25,7 @@ jobs:
               python -m pip install --upgrade pip
               pip install poetry
               poetry --version
-              poetry install --no-root
+              poetry install
         - save_cache:
             key: v1-ci-cache-{{ checksum "poetry.lock" }}
             paths:
@@ -53,7 +53,7 @@ jobs:
               python -m pip install --upgrade pip
               pip install poetry
               poetry --version
-              poetry install --extras packaging --no-root
+              poetry install --extras packaging
         - save_cache:
             key: v1-publish-cache-{{ checksum "poetry.lock" }}
             paths:
