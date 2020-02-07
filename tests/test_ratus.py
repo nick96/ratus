@@ -2,21 +2,21 @@ import re
 
 import pytest
 
-from ratus import __version__, Evaluator
-from ratus.token import Tokeniser, Token, TokenLiteral, TokenType, TokeniserError
+from ratus import Evaluator, __version__
+from ratus.execer import Executor, ExecutorError
 from ratus.parse import (
-    Parser,
-    ParserError,
-    Float,
-    String,
-    Function,
     BinaryOp,
     BinaryOpType,
+    Float,
+    Function,
+    Integer,
+    Parser,
+    ParserError,
+    String,
     UnaryOp,
     UnaryOpType,
-    Integer,
 )
-from ratus.execer import Executor, ExecutorError
+from ratus.token import Token, Tokeniser, TokenLiteral, TokenType
 
 
 def test_version():
