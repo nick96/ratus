@@ -1,15 +1,15 @@
 version: 2.1
 
-workflows:
-  build_and_publish:
-    jobs:
-        - build
-        - publish:
-            requires:
-              - build
-            filters:
-              tags:
-                only: /v[0-9]+\.[0-9]+\.[0-9]+$/
+# workflows:
+#   build_and_publish:
+#     jobs:
+#         - build
+#         - publish:
+#             requires:
+#               - build
+#             filters:
+#               tags:
+#                 only: /v[0-9]+\.[0-9]+\.[0-9]+$/
 
 jobs:
   build:
@@ -40,30 +40,30 @@ jobs:
             name: Test
             command: poetry run pytest --cov=ratus tests
 
-  publish:
-    docker:
-      - image: circleci/python:3.8
-    steps:
-        - checkout
-        - restore_cache:
-            key: v1-publish-cache-{{ checksum "poetry.lock" }}
-        - run:
-            name: Install packaging dependencies
-            command: |
-              python -m pip install --upgrade pip
-              pip install poetry
-              poetry --version
-              poetry install --extras packaging
-        - save_cache:
-            key: v1-publish-cache-{{ checksum "poetry.lock" }}
-            paths:
-              - /home/circleci/.cache/virtualenvs/ratus-py3.7
-        - run:
-            name: Build
-            command: poetry build
-        - run:
-            name: Publish
-            command: twine upload dist/*
-            environment:
-              TWINE_USERNAME: "$PYPI_USERNAME"
-              TWINE_PASSWORD: "$PYPI_PASSWORD"
+  # publish:
+  #   docker:
+  #     - image: circleci/python:3.8
+  #   steps:
+  #       - checkout
+  #       - restore_cache:
+  #           key: v1-publish-cache-{{ checksum "poetry.lock" }}
+  #       - run:
+  #           name: Install packaging dependencies
+  #           command: |
+  #             python -m pip install --upgrade pip
+  #             pip install poetry
+  #             poetry --version
+  #             poetry install --extras packaging
+  #       - save_cache:
+  #           key: v1-publish-cache-{{ checksum "poetry.lock" }}
+  #           paths:
+  #             - /home/circleci/.cache/virtualenvs/ratus-py3.7
+  #       - run:
+  #           name: Build
+  #           command: poetry build
+  #       - run:
+  #           name: Publish
+  #           command: twine upload dist/*
+  #           environment:
+  #             TWINE_USERNAME: "$PYPI_USERNAME"
+  #             TWINE_PASSWORD: "$PYPI_PASSWORD"
