@@ -1,9 +1,9 @@
 from abc import ABC
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Tuple
+from typing import Any, List, Tuple, cast
 
-from ratus.token import Token, TokenType
+from ratus.token import Token, TokenLiteral, TokenType
 
 
 class ParserError(Exception):
@@ -16,6 +16,8 @@ class Expression(ABC):
 
 class Literal(Expression, ABC):
     """Literal value."""
+
+    value: Any
 
 
 @dataclass
@@ -40,7 +42,7 @@ class String(Literal):
 
 
 @dataclass
-class Function:
+class Function(Expression):
     """
     Function call.
 
@@ -70,7 +72,7 @@ class BinaryOpType(Enum):
 
 
 @dataclass
-class BinaryOp(ABC):
+class BinaryOp(Expression, ABC):
     """
     Binary operation.
 
@@ -91,7 +93,7 @@ class UnaryOpType(Enum):
 
 
 @dataclass
-class UnaryOp(ABC):
+class UnaryOp(Expression, ABC):
     """
     Unary operation.
 
@@ -111,9 +113,9 @@ def _parse(tokens: List[Token]) -> Expression:
 def _parse_expression(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
     if len(tokens) == 0:
         raise ParserError("Expression cannot be empty")
-    if tokens[0].token_type is TokenType.STRING:
+    if tokens[0].token_type is TokenType.STRING and isinstance(tokens[0], TokenLiteral):
         return String(tokens[0].literal), tokens[1:]
-    if tokens[0].token_type is TokenType.IDENT:
+    if tokens[0].token_type is TokenType.IDENT and isinstance(tokens[0], TokenLiteral):
         return _parse_function(tokens)
     expr, rest = _parse_term(tokens)
     while len(rest) > 0:
@@ -157,7 +159,7 @@ def _parse_function(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
         raise ParserError(f"Tokens {tokens} do not form a valid function call")
     if tokens[1].token_type is not TokenType.LEFT_PAREN:
         raise ParserError(
-            f"Expected left paren ('(') following call to function '{tokens[0].literal}'. Found '{tokens[1].lexeme}'"
+            f"Expected left paren ('(') following call to function '{tokens[0].lexeme}'. Found '{tokens[1].lexeme}'"
         )
     nesting = 0
     end_of_function_call_idx = 0
@@ -171,9 +173,11 @@ def _parse_function(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
                 break
     else:
         raise ParserError(
-            f"Unbalanced parentheses in call to function '{tokens[0].literal}'"
+            f"Unbalanced parentheses in call to function '{tokens[0].lexeme}'"
         )
-    name = tokens[0].literal
+    func_token: TokenLiteral
+    func_token = cast(TokenLiteral, tokens[0])
+    name = func_token.literal
     if len(tokens) == 3:
         return Function(name, args=[]), tokens[end_of_function_call_idx + 1 :]
     args_tokens, rest = _split_function_args(tokens[2:])
@@ -223,9 +227,9 @@ def _parse_number(
 ) -> Tuple[Expression, List[Token]]:
     if len(tokens) == 0:
         raise ParserError(f"Expected int or float token but none were found")
-    if tokens[0].token_type is TokenType.INT:
+    if tokens[0].token_type is TokenType.INT and isinstance(tokens[0], TokenLiteral):
         return Integer(tokens[0].literal), tokens[1:]
-    if tokens[0].token_type is TokenType.FLOAT:
+    if tokens[0].token_type is TokenType.FLOAT and isinstance(tokens[0], TokenLiteral):
         return Float(tokens[0].literal), tokens[1:]
     if tokens[0].token_type is TokenType.MINUS and minus_allowed:
         operand, rest = _parse_number(tokens[1:], bang_allowed=False)

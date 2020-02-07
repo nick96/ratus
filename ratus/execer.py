@@ -1,7 +1,7 @@
 import operator
 from typing import Any, Callable, Dict, Optional
 
-from ratus.parse import BinaryOp, Expression, Function, Literal
+from ratus.parse import BinaryOp, Expression, Function, Literal, UnaryOp
 
 
 class ExecutorError(Exception):
@@ -35,7 +35,7 @@ class Executor:
         dictionary mapping variants of `ratus.parse.UnaryOpTypes` to a function with one
         parameter and one outputs.
         """
-        self.binary_ops = {
+        self.binary_ops: Dict[str, Callable[[Any, Any], Any]] = {
             "+": operator.add,
             "-": operator.sub,
             "*": operator.mul,
@@ -52,7 +52,10 @@ class Executor:
         if binary_ops is not None:
             self.binary_ops.update(binary_ops)
 
-        self.unary_ops = {"!": operator.not_, "-": operator.neg}
+        self.unary_ops: Dict[str, Callable[[Any], Any]] = {
+            "!": operator.not_,
+            "-": operator.neg,
+        }
         if unary_ops is not None:
             self.unary_ops.update(unary_ops)
 
@@ -67,12 +70,12 @@ class Executor:
         if isinstance(expression, BinaryOp):
             left = self.execute(expression.left)
             right = self.execute(expression.right)
-            op = self.binary_ops[expression.op_type.value]
-            return op(left, right)
+            binary_op = self.binary_ops[expression.op_type.value]
+            return binary_op(left, right)
         if isinstance(expression, UnaryOp):
             operand = self.execute(expression.operand)
-            op = self.unary_ops[expression.op_type.value]
-            return op(operand)
+            unary_op = self.unary_ops[expression.op_type.value]
+            return unary_op(operand)
         if isinstance(expression, Function):
             function = self.functions.get(expression.name)
             if function is None:
