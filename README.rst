@@ -17,3 +17,7 @@ is as simple as:
     evaluator.evaluate("1 + 1") # 1
     evaluator.evaluate("1 > 1") # False
     evaluator.evaluate("if(1 < 2, 10, 5)") # 5
+
+For more information, please check out the docs_
+
+.. _docs: https://ratus.readthedocs.io/en/latest/
