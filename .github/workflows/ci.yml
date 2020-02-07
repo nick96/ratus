@@ -35,4 +35,4 @@ jobs:
         poetry run black --check ratus
         poetry run isort --check-only
     - name: Test with pytest
-      run: poetry run pytest --cov=ratus --cov-fail-under=95 test/
+      run: poetry run pytest --cov=ratus tests/
