@@ -3,7 +3,10 @@ version: 2.1
 workflows:
   build_and_publish:
     jobs:
-        - build
+        - build:
+            filters:
+              tags:
+                only: /.*/
         - publish:
             requires:
               - build
@@ -55,7 +58,6 @@ jobs:
             command: |
               python -m pip install --upgrade pip
               pip install poetry
-              poetry --version
               poetry install --extras packaging
         - save_cache:
             key: v1-publish-cache-{{ checksum "poetry.lock" }}
@@ -63,10 +65,12 @@ jobs:
               - /home/circleci/.cache/virtualenvs/ratus-py3.7
         - run:
             name: Build
-            command: poetry build
+            command: |
+              poetry build
+              ls
         - run:
             name: Publish
-            command: twine upload dist/*
+            command: poetry run twine upload dist/*
             environment:
               TWINE_USERNAME: "$PYPI_USERNAME"
               TWINE_PASSWORD: "$PYPI_PASSWORD"
