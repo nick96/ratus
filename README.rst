@@ -9,3 +9,11 @@ Ratus is a simple expression language that can be used to easily extend Python
 applications with an embedded expression language. Evaluating basic expressions
 is as simple as:
 
+::
+
+    from ratus import Evaluator
+
+    evaluator = Evaluator()
+    evaluator.evaluate("1 + 1") # 1
+    evaluator.evaluate("1 > 1") # False
+    evaluator.evaluate("if(1 < 2, 10, 5)") # 5
