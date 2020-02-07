@@ -5,6 +5,8 @@ Ratus is a simple expression language that can be used to easily extend Python
 applications with an embedded expression language. Evaluating basic expressions
 is as simple as:
 
+::
+
     from ratus import Evaluator
 
     evaluator = Evaluator()
@@ -33,6 +35,7 @@ You can add new functions by creating the `Evaluator` object with a dictionary
 argument in the constructor that maps the function name to a callable that
 performs the desired behavior.
 
+::
 
     from ratus import Evaluator
 
@@ -53,6 +56,8 @@ You can override what the unary and binary operations do by providing a
 dictionary as the `unary_ops` and `binary_ops` argument, respectively, to
 `Evaluator`'s constructor. This will update the mapping for the specified
 operations but will not change any of the others.
+
+::
 
     from ratus import Evaluator, BinaryOpTypes, UnaryOpTypes
 
