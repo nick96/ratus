@@ -30,6 +30,7 @@ The ratus expression language allows the following constructs:
 
 - Int, Float and String literals
 - Comparison operations
+
   - Greater than (`>`)
   - Greater than or equal (`>=`)
   - Less than (`<`)
