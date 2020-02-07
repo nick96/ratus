@@ -33,7 +33,7 @@ extend applications in a controllable way. It provides the following features:
   - Integer (positive and negative)
   - Float (positive and negative)
 """
-from typing import Any, Optional, Dict, Callable
+from typing import Any, Callable, Dict, Optional
 
 from ratus.execer import Executor
 from ratus.parse import Parser

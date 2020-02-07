@@ -1,7 +1,7 @@
-from dataclasses import dataclass
-from typing import List, Tuple
 from abc import ABC
+from dataclasses import dataclass
 from enum import Enum
+from typing import List, Tuple
 
 from ratus.token import Token, TokenType
 

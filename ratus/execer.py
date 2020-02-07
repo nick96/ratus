@@ -1,14 +1,7 @@
-from ratus.parse import (
-    Expression,
-    Literal,
-    BinaryOp,
-    BinaryOpType,
-    UnaryOp,
-    UnaryOpType,
-    Function,
-)
-from typing import Any, Dict, Callable, Optional
 import operator
+from typing import Any, Callable, Dict, Optional
+
+from ratus.parse import BinaryOp, Expression, Function, Literal
 
 
 class ExecutorError(Exception):
