@@ -19,8 +19,29 @@ class Executor:
     """Executor of expressions."""
 
     def __init__(
-        self, injected_functions: Optional[Dict[str, Callable[..., Any]]] = None
+        self,
+        functions: Optional[Dict[str, Callable[..., Any]]] = None,
+        binary_ops: Optional[Dict[str, Callable[[Any, Any], Any]]] = None,
+        unary_ops: Optional[Dict[str, Callable[[Any], Any]]] = None,
     ) -> None:
+        """
+        Instantiate an Executor object.
+
+        This constructor provides three arguments to control behavior.
+
+        `functions` allows us to extend the callable functions in expression. By default
+        only `if` is provided but more can be added and the default definition of `if`
+        (`lambda c, s, f: s if c else f`) can be overridden simple by having an "if" key
+        in the `functions` dictionary.
+
+        `binary_ops` allows us to extend the binary operations available. It is a
+        dictionary mapping variants of `ratus.parse.BinaryOpTypes` to a function with
+        two parameters and a single output.
+
+        `unary_ops` allows us to extend the unary operations available. It is a
+        dictionary mapping variants of `ratus.parse.UnaryOpTypes` to a function with one
+        parameter and one outputs.
+        """
         self.binary_ops = {
             "+": operator.add,
             "-": operator.sub,
@@ -35,10 +56,16 @@ class Executor:
             "=": operator.eq,
             "!=": operator.ne,
         }
+        if binary_ops is not None:
+            self.binary_ops.update(binary_ops)
+
         self.unary_ops = {"!": operator.not_, "-": operator.neg}
+        if unary_ops is not None:
+            self.unary_ops.update(unary_ops)
+
         self.functions = {"if": lambda c, s, f: s if c else f}
-        if injected_functions is not None:
-            self.functions.update(injected_functions)
+        if functions is not None:
+            self.functions.update(functions)
 
     def execute(self, expression: Expression) -> Any:
         """Execute an expression and return the result."""

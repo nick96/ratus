@@ -1,22 +1,5 @@
-"""
-Grammar
-=======
-
-These are the rules for producing a valid stream of tokens. This is what the
-parser is built off.
-
-```
-Expression -> Term (("+" | "-") Term)* | Expression (">" | ">=" | "<" | "<=" | "=" | "!=") Expression  | String | Function
-Term -> Factor (("*" | "/") Factor)*
-Factor -> "(" Expression ")" | Number
-Number -> "-"* (Integer | Float) | "!"* (Integer | Float)
-Function -> Ident"(" Expression("," Expression)*")"
-```
-
-"""
-
 from dataclasses import dataclass
-from typing import List, Dict, Any, Union, Optional, Tuple
+from typing import List, Tuple
 from abc import ABC
 from enum import Enum
 
@@ -32,31 +15,46 @@ class Expression(ABC):
 
 
 class Literal(Expression, ABC):
-    pass
+    """Literal value."""
 
 
 @dataclass
 class Integer(Literal):
+    """Integer literal."""
+
     value: int
 
 
 @dataclass
 class Float(Literal):
+    """Float literal."""
+
     value: float
 
 
 @dataclass
 class String(Literal):
+    """String literal."""
+
     value: str
 
 
 @dataclass
 class Function:
+    """
+    Function call.
+
+    Functions have a `name` which is used to look them up in the executor and a
+    list of arguments that the function should be called with.
+    """
+
     name: str
     args: List[Expression]
 
 
 class BinaryOpType(Enum):
+    """Binary operation type."""
+
     ADDITION = "+"
     SUBTRACTION = "-"
     MULTIPLICATION = "*"
@@ -73,35 +71,51 @@ class BinaryOpType(Enum):
 
 @dataclass
 class BinaryOp(ABC):
+    """
+    Binary operation.
+
+    Binary operations have a type that maps them to the operation that is being
+    performed and left and right operands upon which the operation is performed.
+    """
+
     op_type: BinaryOpType
     left: Expression
     right: Expression
 
 
 class UnaryOpType(Enum):
+    """Unary operation type."""
+
     NOT = "!"
     NEGATIVE = "-"
 
 
 @dataclass
 class UnaryOp(ABC):
+    """
+    Unary operation.
+
+    Unary operations have a type and a single operand upon which the action is
+    performed.
+    """
+
     op_type: UnaryOpType
     operand: Expression
 
 
-def parse(tokens: List[Token]) -> Expression:
-    expression, _ = parse_expression(tokens)
+def _parse(tokens: List[Token]) -> Expression:
+    expression, _ = _parse_expression(tokens)
     return expression
 
 
-def parse_expression(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
+def _parse_expression(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
     if len(tokens) == 0:
         raise ParserError("Expression cannot be empty")
     if tokens[0].token_type is TokenType.STRING:
         return String(tokens[0].literal), tokens[1:]
     if tokens[0].token_type is TokenType.IDENT:
-        return parse_function(tokens)
-    expr, rest = parse_term(tokens)
+        return _parse_function(tokens)
+    expr, rest = _parse_term(tokens)
     while len(rest) > 0:
         operator, *rest = rest
         if operator.token_type not in (
@@ -120,7 +134,7 @@ def parse_expression(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
                 f"Unexpected token after term {expr}. Expected operator '+', "
                 "'-', '>', '>='. '<'. '<=', '=', '!=', 'and', 'or'."
             )
-        right_term, rest = parse_term(rest)
+        right_term, rest = _parse_term(rest)
         operator_type_mapping = {
             TokenType.PLUS: BinaryOpType.ADDITION,
             TokenType.MINUS: BinaryOpType.SUBTRACTION,
@@ -138,7 +152,7 @@ def parse_expression(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
     return expr, []
 
 
-def parse_function(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
+def _parse_function(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
     if len(tokens) < 3:
         raise ParserError(f"Tokens {tokens} do not form a valid function call")
     if tokens[1].token_type is not TokenType.LEFT_PAREN:
@@ -162,20 +176,20 @@ def parse_function(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
     name = tokens[0].literal
     if len(tokens) == 3:
         return Function(name, args=[]), tokens[end_of_function_call_idx + 1 :]
-    args_tokens, rest = split_function_args(tokens[2:])
-    args = [parse(arg_tokens) for arg_tokens in args_tokens]
+    args_tokens, rest = _split_function_args(tokens[2:])
+    args = [_parse(arg_tokens) for arg_tokens in args_tokens]
     return Function(name, args=args), rest
 
 
-def parse_term(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
-    term, rest = parse_factor(tokens)
+def _parse_term(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
+    term, rest = _parse_factor(tokens)
     while len(rest) > 0:
         operator, *rest = rest
         if operator.token_type not in (TokenType.STAR, TokenType.SLASH):
             return term, [operator] + rest
 
         # Based on the condition we know the operator token is STAR or SLASH
-        right_factor, rest = parse_factor(rest)
+        right_factor, rest = _parse_factor(rest)
         operator_type_mapping = {
             TokenType.STAR: BinaryOpType.MULTIPLICATION,
             TokenType.SLASH: BinaryOpType.DIVISION,
@@ -186,7 +200,7 @@ def parse_term(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
     return term, rest
 
 
-def parse_factor(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
+def _parse_factor(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
     if tokens[0].token_type is TokenType.LEFT_PAREN:
         expr_end_index = 0
         nesting = 0
@@ -199,12 +213,12 @@ def parse_factor(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
                     expr_end_index = i
                     break
         expr_tokens = tokens[1:expr_end_index]
-        expr = parse(expr_tokens)
+        expr = _parse(expr_tokens)
         return expr, tokens[expr_end_index + 1 :]
-    return parse_number(tokens)
+    return _parse_number(tokens)
 
 
-def parse_number(
+def _parse_number(
     tokens: List[Token], bang_allowed=True, minus_allowed=True
 ) -> Tuple[Expression, List[Token]]:
     if len(tokens) == 0:
@@ -214,15 +228,15 @@ def parse_number(
     if tokens[0].token_type is TokenType.FLOAT:
         return Float(tokens[0].literal), tokens[1:]
     if tokens[0].token_type is TokenType.MINUS and minus_allowed:
-        operand, rest = parse_number(tokens[1:], bang_allowed=False)
+        operand, rest = _parse_number(tokens[1:], bang_allowed=False)
         return UnaryOp(UnaryOpType.NEGATIVE, operand), rest
     if tokens[0].token_type is TokenType.BANG and bang_allowed:
-        operand, rest = parse_number(tokens[1:], minus_allowed=False)
+        operand, rest = _parse_number(tokens[1:], minus_allowed=False)
         return UnaryOp(UnaryOpType.NOT, operand), rest
     raise ParserError(f"Unexpected token {tokens[0]}. Expected an int or float")
 
 
-def split_function_args(tokens: List[Token]) -> Tuple[List[List[Token]], List[Token]]:
+def _split_function_args(tokens: List[Token]) -> Tuple[List[List[Token]], List[Token]]:
     nesting = 1
     arg: List[Token] = []
     function_args: List[List[Token]] = []
@@ -246,4 +260,4 @@ def split_function_args(tokens: List[Token]) -> Tuple[List[List[Token]], List[To
 
 class Parser:
     def parse(self, tokens: List[Token]):
-        return parse(tokens)
+        return _parse(tokens)

@@ -1,41 +1,37 @@
-"""ratus - A simple expression language.
+"""
+ratus - A simple expression language.
+
 ratus is a simple expression language intended to be used to easily and safely
 extend applications in a controllable way. It provides the following features:
 
 - Callable functions
+
   - These can be injected when evaluating the expression but they cannot be
-    defined
-  - `if` is provided by default but can be overrides if you really want to
+    defined within the expression language
+  - ``if`` is provided by default but can be overridden if you really want to
+
 - Simple math operations, more advanced functions can be implemented as
   functions
-  - Addition (+)
-  - Subtractions (-)
-  - Multiplication (*)
-  - Division (/)
+
+  - Addition (``+``)
+  - Subtractions (``-``)
+  - Multiplication (``*``)
+  - Division (``/``)
+
 - Comparison operators
-  - Equal (=)
-  - Not equal (!=)
-  - Greater than (>)
-  - Greater than or equal (>=)
-  - Less than (<)
-  - Less than or equal (<=)
+
+  - Equal (``=``)
+  - Not equal (``!=``)
+  - Greater than (``>``)
+  - Greater than or equal (``>=``)
+  - Less than (``<``)
+  - Less than or equal (``<=``)
+
 - Literals
+
   - String (double and single quotes)
   - Integer (positive and negative)
   - Float (positive and negative)
-
-Grammar
--------
-
-expression -> literal | unary | binary | grouping;
-literal -> int | float | string;
-unary -> unary_op expression;
-unary_op -> '-' | '!';
-binary -> expression binary_op expression;
-binary_op -> '=' | '!=' | '<' | '<=' | '>' | '>=' | '+' | '-' | '/';
-
-
-Associatity
 """
 from typing import Any, Optional, Dict, Callable
 
@@ -45,8 +41,12 @@ from ratus.token import Tokeniser
 
 __version__ = "0.0.1"
 
+__all__ = ["Evaluator", "token", "parse", "execer"]
+
 
 class Evaluator:
+    "Expression evaluator."
+
     def __init__(
         self, injected_functions: Optional[Dict[str, Callable[..., Any]]] = None
     ) -> None:
