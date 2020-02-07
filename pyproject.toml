@@ -13,6 +13,9 @@ pytest = "^3.0"
 black = "19.10b0"
 isort = "4.3.21"
 sphinx = "^2.3"
+setuptools = "^45.1"
+wheel = "^0.34.2"
+twine = "^3.1"
 
 [build-system]
 requires = ["poetry>=0.12"]
