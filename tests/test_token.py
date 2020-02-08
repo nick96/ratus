@@ -99,21 +99,25 @@ from ratus.token import Token, Tokeniser, TokeniserError, TokenLiteral, TokenTyp
             ],
         ),
         ("!1", [Token(TokenType.BANG, "!"), TokenLiteral(TokenType.INT, "1", 1)],),
-        (
+        pytest.param(
             "1 <= 1",
             [
                 TokenLiteral(TokenType.INT, "1", 1),
                 Token(TokenType.LESS_EQUAL, "<="),
                 TokenLiteral(TokenType.INT, "1", 1),
             ],
+            id="less_than_equal_to",
+            marks=pytest.mark.xfail,
         ),
-        (
+        pytest.param(
             "1 >= 1",
             [
                 TokenLiteral(TokenType.INT, "1", 1),
                 Token(TokenType.GREATER_EQUAL, ">="),
                 TokenLiteral(TokenType.INT, "1", 1),
             ],
+            id="greater_than_equal_to",
+            marks=pytest.mark.xfail,
         ),
     ),
 )
