@@ -27,3 +27,15 @@ is as simple as:
 For more information, please check out the docs_
 
 .. _docs: https://ratus.readthedocs.io/en/latest/
+
+What's in a name?
+-----------------
+
+When I first started this project I did a bit of research around parsing
+techniques as this is really the most complex part. One idea that that really
+stuck out to me was packrat_ parsing. This technique allows for linear time
+parsing, as opposed to the usual exponential time of backtracking parsing.
+
+Currently packrat parsing isn't implemented for `ratus` but I'm working on it!
+
+.. _packrat: https://bford.info/packrat/
