@@ -21,5 +21,5 @@ repos:
     rev: v0.761
     hooks:
     -   id: mypy
-        files: ^(ratus/|tests/)
+        files: ratus/
         args: []
