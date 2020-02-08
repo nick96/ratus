@@ -10,6 +10,14 @@ Welcome to ratus's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   usage
+   language
+   tokenisation
+   parsing
+   execution
+   evaluation
+
+
 Ratus is a simple expression language that can be used to easily extend Python
 applications with an embedded expression language. Evaluating basic expressions
 is as simple as:
