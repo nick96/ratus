@@ -180,6 +180,34 @@ def test_parse(tokens, expected):
                 f"Expected left paren ('(') following call to function 'f'. "
                 "Found '1'"
             ),
+            id="unbalanced_closing_paren",
+        ),
+        pytest.param(
+            [TokenLiteral(TokenType.INT, "1", 1), Token(TokenType.LEFT_PAREN, "("),],
+            re.escape(
+                f"Unexpected token after term {Integer(1)}. "
+                "Expected operator '+', "
+                "'-', '>', '>=', '<', '<=', '=', '!=', 'and', 'or'."
+            ),
+            id="unexpected_term_after_literal",
+        ),
+        pytest.param(
+            [
+                TokenLiteral(TokenType.IDENT, "f", "f"),
+                Token(TokenType.LEFT_PAREN, "("),
+                Token(TokenType.LEFT_PAREN, "("),
+                TokenLiteral(TokenType.INT, "1", 1),
+                Token(TokenType.RIGHT_PAREN, ")"),
+            ],
+            re.escape("Unbalanced parentheses in call to function 'f'"),
+            id="unbalanced_opening_paren_in_func",
+        ),
+        pytest.param(
+            [Token(TokenType.PLUS, "+"), TokenLiteral(TokenType.INT, "1", 1)],
+            re.escape(
+                f"Unexpected token {Token(TokenType.PLUS, '+')}."
+                " Expected an int or float"
+            ),
         ),
     ),
 )
