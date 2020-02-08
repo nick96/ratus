@@ -134,7 +134,7 @@ def _parse_expression(tokens: List[Token]) -> Tuple[Expression, List[Token]]:
         ):
             raise ParserError(
                 f"Unexpected token after term {expr}. Expected operator '+', "
-                "'-', '>', '>='. '<'. '<=', '=', '!=', 'and', 'or'."
+                "'-', '>', '>=', '<', '<=', '=', '!=', 'and', 'or'."
             )
         right_term, rest = _parse_term(rest)
         operator_type_mapping = {
