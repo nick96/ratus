@@ -71,6 +71,3 @@ jobs:
         - run:
             name: Publish
             command: poetry run python -m twine upload dist/*
-            environment:
-              TWINE_USERNAME: "$PYPI_USERNAME"
-              TWINE_PASSWORD: "$PYPI_PASSWORD"
