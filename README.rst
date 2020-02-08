@@ -13,10 +13,6 @@ Ratus
    :target: https://pypi.org/project/ratus/
    :alt: PyPI
 
-.. image:: https://img.shields.io/librariesio/release/pypi/ratus
-   :alt: Libraries.io dependency status for latest release
-
-
 
 Ratus is a simple expression language that can be used to easily extend Python
 applications with an embedded expression language. Evaluating basic expressions
