@@ -9,6 +9,10 @@ Ratus
    :target: https://app.circleci.com/github/nick96/ratus
    :alt: CircleCI Status
 
+.. image:: https://img.shields.io/pypi/v/ratus
+   :target: https://pypi.org/project/ratus/
+   :alt: PyPI
+
 
 
 Ratus is a simple expression language that can be used to easily extend Python
