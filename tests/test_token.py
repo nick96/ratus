@@ -1,6 +1,8 @@
+import re
+
 import pytest
 
-from ratus.token import Token, Tokeniser, TokenLiteral, TokenType
+from ratus.token import Token, Tokeniser, TokeniserError, TokenLiteral, TokenType
 
 
 @pytest.mark.parametrize(
@@ -96,6 +98,23 @@ from ratus.token import Token, Tokeniser, TokenLiteral, TokenType
                 Token(TokenType.RIGHT_PAREN, ")"),
             ],
         ),
+        ("!1", [Token(TokenType.BANG, "!"), TokenLiteral(TokenType.INT, "1", 1)],),
+        (
+            "1 <= 1",
+            [
+                TokenLiteral(TokenType.INT, "1", 1),
+                Token(TokenType.LESS_EQUAL, "<="),
+                TokenLiteral(TokenType.INT, "1", 1),
+            ],
+        ),
+        (
+            "1 >= 1",
+            [
+                TokenLiteral(TokenType.INT, "1", 1),
+                Token(TokenType.GREATER_EQUAL, ">="),
+                TokenLiteral(TokenType.INT, "1", 1),
+            ],
+        ),
     ),
 )
 def test_tokenise(source, expected):
@@ -103,6 +122,22 @@ def test_tokenise(source, expected):
     assert tokeniser.tokenise(source) == expected
 
 
-@pytest.mark.parametrize(("source", "error_msg"), ())
+@pytest.mark.parametrize(
+    ("source", "error_msg"),
+    (
+        pytest.param(
+            "'test", "Unterminated string", id="unterminated_string_single_quote",
+        ),
+        pytest.param(
+            '"test', "Unterminated string", id="unterminated_string_double_quote",
+        ),
+        pytest.param(
+            "1.", "Expression cannot finish with '.'", id="terminating_period"
+        ),
+        pytest.param("1.+1", re.escape("Expected digit after '.', found '+'")),
+    ),
+)
 def test_tokenise_error(source, error_msg):
-    pass
+    tokeniser = Tokeniser()
+    with pytest.raises(TokeniserError, match=error_msg):
+        tokeniser.tokenise(source)
