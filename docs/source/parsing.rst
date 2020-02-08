@@ -1,8 +1,8 @@
 Parsing
 =======
 
-``parse``
----------
+``ratus.parse``
+---------------
 
 .. automodule:: ratus.parse
    :members:

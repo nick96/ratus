@@ -2,8 +2,8 @@ Execution
 =========
 
 
-``execer``
-----------
+``ratus.execer``
+----------------
 
 .. automodule:: ratus.execer
    :members:

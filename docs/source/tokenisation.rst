@@ -2,8 +2,8 @@ Tokenisation
 ============
 
 
-``token``
----------
+``ratus.token``
+---------------
 
 .. automodule:: ratus.token
    :members:
