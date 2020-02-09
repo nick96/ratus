@@ -107,7 +107,6 @@ from ratus.token import Token, Tokeniser, TokeniserError, TokenLiteral, TokenTyp
                 TokenLiteral(TokenType.INT, "1", 1),
             ],
             id="less_than_equal_to",
-            marks=pytest.mark.xfail,
         ),
         pytest.param(
             "1 >= 1",
@@ -117,7 +116,6 @@ from ratus.token import Token, Tokeniser, TokeniserError, TokenLiteral, TokenTyp
                 TokenLiteral(TokenType.INT, "1", 1),
             ],
             id="greater_than_equal_to",
-            marks=pytest.mark.xfail,
         ),
     ),
 )
@@ -138,7 +136,11 @@ def test_tokenise(source, expected):
         pytest.param(
             "1.", "Expression cannot finish with '.'", id="terminating_period"
         ),
-        pytest.param("1.+1", re.escape("Expected digit after '.', found '+'")),
+        pytest.param(
+            "1.+1",
+            re.escape("Expected digit after '.', found '+'"),
+            id="unfinished_float",
+        ),
     ),
 )
 def test_tokenise_error(source, error_msg):

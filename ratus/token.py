@@ -86,14 +86,14 @@ class Tokeniser:
                 self.add_token(TokenType.BANG)
         elif c == "<":
             if self.source[self.current] == "=":
-                self.add_token(TokenType.LESS_EQUAL)
                 self.current += 1
+                self.add_token(TokenType.LESS_EQUAL)
             else:
                 self.add_token(TokenType.LESS)
         elif c == ">":
             if self.source[self.current] == "=":
-                self.add_token(TokenType.GREATER_EQUAL)
                 self.current += 1
+                self.add_token(TokenType.GREATER_EQUAL)
             else:
                 self.add_token(TokenType.GREATER)
         elif c in ("'", '"'):
