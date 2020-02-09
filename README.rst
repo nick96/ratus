@@ -42,3 +42,14 @@ parsing, as opposed to the usual exponential time of backtracking parsing.
 Currently packrat parsing isn't implemented for `ratus` but I'm working on it!
 
 .. _packrat: https://bford.info/packrat/
+
+Roadmap
+-------
+
+`v1.0.0`
+~~~~~~~~
+
+- Fully document all features
+- Don't require functions to be the root of an expression
+
+  - e.g. ``pow(2, 2) + 1`` should be allowed
