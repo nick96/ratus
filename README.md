@@ -1,5 +1,9 @@
 # Ratus
 
+[![Documentation Status](https://readthedocs.org/projects/ratus/badge/?version=latest)](https://ratus.readthedocs.io/en/latest/?badge=latest)
+[![CircleCI](https://circleci.com/gh/nick96/ratus.svg?style=svg)](https://circleci.com/gh/nick96/ratus)
+[![PyPI](https://img.shields.io/pypi/v/ratus)](https://pypi.org/project/ratus/)
+
 Ratus is a simple expression language that can be used to easily extend Python
 applications with an embedded expression language. Evaluating basic expressions
 is as simple as:
