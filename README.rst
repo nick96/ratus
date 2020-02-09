@@ -53,3 +53,5 @@ Roadmap
 - Don't require functions to be the root of an expression
 
   - e.g. ``pow(2, 2) + 1`` should be allowed
+
+- Fix known bugs
