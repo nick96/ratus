@@ -49,9 +49,13 @@ Roadmap
 `v1.0.0`
 ~~~~~~~~
 
-- Fully document all features
-- Don't require functions to be the root of an expression
+- [ ] Fully document all features
 
-  - e.g. ``pow(2, 2) + 1`` should be allowed
+  - [ ] API
+  - [ ] Grammar
 
-- Fix known bugs
+- [ ] Fix known bugs
+
+  - [ ] Don't require functions to be the root of an expression
+
+    - e.g. ``pow(2, 2) + 1`` should be allowed
