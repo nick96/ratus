@@ -44,7 +44,7 @@ jobs:
                 poetry run mypy ratus
         - run:
             name: Test
-            command: poetry run pytest --cov=ratus tests
+            command: poetry run pytest --cov=ratus --cov-fail-under=98 --cov-report=term-missing tests
 
   publish:
     docker:
