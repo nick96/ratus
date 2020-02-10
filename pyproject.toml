@@ -3,6 +3,12 @@ name = "ratus"
 version = "0.0.1"
 description = "Simple expression language."
 authors = ["Nick Spain <nicholas.spain96@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/nick96/ratus"
+homepage = "https://github.com/nick96/ratus"
+license = "MIT"
+keywords = ["dsl", "expression-language"]
+classifiers = ["Development Status :: 2 - Pre-Alpha"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
