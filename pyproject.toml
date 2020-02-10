@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ratus"
-version = "0.0.1"
+version = "0.0.3"
 description = "Simple expression language."
 authors = ["Nick Spain <nicholas.spain96@gmail.com>"]
 readme = "README.md"
