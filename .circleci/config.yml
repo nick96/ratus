@@ -19,55 +19,25 @@ workflows:
 jobs:
   build:
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/golang:1.14
     steps:
         - checkout
-        - restore_cache:
-            key: v1-ci-cache-{{ checksum "poetry.lock" }}
-        - run:
-            name: Install Poetry
-            command: |
-              python -m pip install --upgrade pip
-              pip install poetry
-        - run:
-            name: Install dependencies
-            command: poetry install
-        - save_cache:
-            key: v1-ci-cache-{{ checksum "poetry.lock" }}
-            paths:
-              - /home/circleci/.cache/virtualenvs/ratus-py3.7
         - run:
             name: Lint
             command: |
-                poetry run black --check ratus
-                poetry run isort --check-only
-                poetry run mypy ratus
+              go vet ./...
+              go get -u golang.org/x/lint/golint
+              golint ./...
         - run:
             name: Test
-            command: poetry run pytest --cov=ratus --cov-fail-under=98 --cov-report=term-missing tests
+            command: go test -v -cover ./...
+
 
   publish:
     docker:
-      - image: circleci/python:3.8
+      - image: circleci/golang:1.14
     steps:
         - checkout
-        - restore_cache:
-            key: v1-publish-cache-{{ checksum "poetry.lock" }}
         - run:
-            name: Install packaging dependencies
-            command: |
-              python -m pip install --upgrade pip
-              pip install poetry
-              poetry install
-        - save_cache:
-            key: v1-publish-cache-{{ checksum "poetry.lock" }}
-            paths:
-              - /home/circleci/.cache/virtualenvs/ratus-py3.7
-        - run:
-            name: Build
-            command: |
-              poetry build
-              ls
-        - run:
-            name: Publish
-            command: poetry run python -m twine upload dist/*
+            name: Release
+            command: curl -sL https://git.io/goreleaser | bash

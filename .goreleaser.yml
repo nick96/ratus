@@ -1,0 +1,54 @@
+project_name: ratus
+
+env:
+  - GO111MODULE=on
+
+before:
+  hooks:
+    - go mod download
+
+builds:
+  - binary: ratus
+    main: ./cmd/ratus/main.go
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X main.Version={{ .Version }} -X main.Commit={{ .ShortCommit }}
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - 386
+      - arm
+      - arm64
+    ignore:
+      - goos: darwin
+        goarch: 386
+
+
+archives:
+  - id: ratus
+    name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ .Tag }}"
+
+changelog:
+  skip: true
+
+dockers:
+  - image_templates:
+      - "nick96/ratus:latest"
+      - "nick96/ratus:{{ .Version }}"
+      - "nick96/ratus:{{ .ShortCommit }}"
