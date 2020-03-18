@@ -1,0 +1,3 @@
+// Example ratus file that prints hello world
+
+print("Hello, World!")

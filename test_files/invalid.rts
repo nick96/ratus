@@ -1,0 +1,3 @@
+// Example ratus file that will fail compilation due to type error.
+
+1 + "test" // Fails as neither int nor string define addition between the two

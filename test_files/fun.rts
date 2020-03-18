@@ -1,0 +1,6 @@
+// Example ratus file of defining a function.
+
+def f():
+    return 1 + 1.0
+
+print(f())
